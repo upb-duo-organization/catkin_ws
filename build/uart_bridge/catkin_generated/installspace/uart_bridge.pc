@@ -1,0 +1,8 @@
+prefix=/home/sleepy/catkin_ws/install
+
+Name: uart_bridge
+Description: Description of uart_bridge
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,2 @@
+uart_bridge
+-DCATKIN_DEVEL_PREFIX=/home/sleepy/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/sleepy/catkin_ws/install -G Unix Makefiles

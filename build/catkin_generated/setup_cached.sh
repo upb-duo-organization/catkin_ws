@@ -7,4 +7,8 @@
 # new environment variables
 
 # modified environment variables
+export CMAKE_PREFIX_PATH="/home/sleepy/catkin_ws/devel:$CMAKE_PREFIX_PATH"
+export PATH='/opt/ros/melodic/bin:/home/sleepy/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'
 export PWD='/home/sleepy/catkin_ws/build'
+export ROSLISP_PACKAGE_DIRECTORIES='/home/sleepy/catkin_ws/devel/share/common-lisp'
+export ROS_PACKAGE_PATH="/home/sleepy/catkin_ws/src:$ROS_PACKAGE_PATH"

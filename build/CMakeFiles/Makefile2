@@ -917,6 +917,24 @@ clean: uart_bridge/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/clean
 .PHONY : clean
 
 #=============================================================================
+# Directory level rules for directory web_bridge
+
+# Convenience name for "all" pass in the directory.
+web_bridge/all:
+
+.PHONY : web_bridge/all
+
+# Convenience name for "clean" pass in the directory.
+web_bridge/clean:
+
+.PHONY : web_bridge/clean
+
+# Convenience name for "preinstall" pass in the directory.
+web_bridge/preinstall:
+
+.PHONY : web_bridge/preinstall
+
+#=============================================================================
 # Special targets to cleanup operation of make.
 
 # Special rule to run CMake to check the build system integrity.

@@ -45,7 +45,7 @@ class UARTBridge:
         )
 
         self.imu_pub = rospy.Publisher(
-            "/imu",
+            "/imu/data_raw",
             Imu,
             queue_size=10
         )
@@ -73,25 +73,42 @@ class UARTBridge:
         self.ser.write(packet)
 
     def publish_imu(self, accel, gyro):
-        msg = Imu()
+    	msg = Imu()
 
-        msg.header.stamp = rospy.Time.now()
-        msg.header.frame_id = "imu_link"
+    	msg.header.stamp = rospy.Time.now()
+    	msg.header.frame_id = "imu_link"
 
-        # linear acceleration
-        msg.linear_acceleration.x = accel[0]
-        msg.linear_acceleration.y = accel[1]
-        msg.linear_acceleration.z = accel[2]
+    	# angular velocity
+    	msg.angular_velocity.x = gyro[0]
+    	msg.angular_velocity.y = gyro[1]
+    	msg.angular_velocity.z = gyro[2]
 
-        # angular velocity
-        msg.angular_velocity.x = gyro[0]
-        msg.angular_velocity.y = gyro[1]
-        msg.angular_velocity.z = gyro[2]
+    	msg.angular_velocity_covariance = [
+        	0.01, 0, 0,
+        	0, 0.01, 0,
+        	0, 0, 0.01
+    	]
 
-        # orientation unavailable
-        msg.orientation_covariance[0] = -1
+    	# linear acceleration
+    	msg.linear_acceleration.x = accel[0]
+    	msg.linear_acceleration.y = accel[1]
+    	msg.linear_acceleration.z = accel[2]
 
-        self.imu_pub.publish(msg)
+    	msg.linear_acceleration_covariance = [
+        	0.1, 0, 0,
+        	0, 0.1, 0,
+        	0, 0, 0.1
+    	]
+
+    	# IMPORTANT: no orientation available
+    	msg.orientation_covariance = [
+        	-1, 0, 0,
+        	0, 0, 0,
+        	0, 0, 0
+    	]
+
+    	self.imu_pub.publish(msg)
+
 
     def rx_loop(self):
 

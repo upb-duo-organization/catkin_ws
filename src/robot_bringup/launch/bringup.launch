@@ -10,6 +10,12 @@
     <!-- Web control bridge -->
     <node pkg="web_bridge" type="robot_gateway.py" name="web_gateway" output="screen"/>
 
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter">
+      <param name="use_mag" value="false"/>
+      <param name="publish_tf" value="false"/>
+      <param name="world_frame" value="enu"/>
+    </node>
+
     <node pkg="usb_cam"
       type="usb_cam_node"
       name="usb_cam"
@@ -36,14 +42,17 @@
        <param name="frame_id" value="base_link"/>
        <param name="odom_frame_id" value="odom"/>
 
+       <param name="publish_map" value="true"/>
        <param name="subscribe_depth" value="false"/>
        <param name="approx_sync" value="true"/>
        <param name="visual_odometry" value="true"/>
-       <param name="subscribe_imu" value="false"/>
+       <param name="tf_delay" value="0.2"/>
+       <param name="tf_tolerance" value="0.2"/>
 
        <remap from="rgb/image" to="/usb_cam/image_raw"/>
        <remap from="rgb/camera_info" to="/usb_cam/camera_info"/>
        <remap from="odom" to="/odom"/>
+       <remap from="imu" to="/imu/data"/>
 
     </node>
 

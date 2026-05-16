@@ -131,6 +131,11 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/sleepy/catkin_ws/build/gtest/cmake_install.cmake")
+  include("/home/sleepy/catkin_ws/build/robot_semantic_map/cmake_install.cmake")
+  include("/home/sleepy/catkin_ws/build/robot_exploration/cmake_install.cmake")
+  include("/home/sleepy/catkin_ws/build/robot_perception/cmake_install.cmake")
+  include("/home/sleepy/catkin_ws/build/robot_bringup/cmake_install.cmake")
+  include("/home/sleepy/catkin_ws/build/robot_odometry/cmake_install.cmake")
   include("/home/sleepy/catkin_ws/build/uart_bridge/cmake_install.cmake")
   include("/home/sleepy/catkin_ws/build/web_bridge/cmake_install.cmake")
 

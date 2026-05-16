@@ -1,0 +1,8 @@
+prefix=/home/sleepy/catkin_ws/install
+
+Name: robot_semantic_map
+Description: Description of robot_semantic_map
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

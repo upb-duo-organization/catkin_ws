@@ -1,0 +1,51 @@
+<launch>
+    <include file="$(find robot_odometry)/launch/odom.launch"/>
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+    
+    <node pkg="web_video_server" type="web_video_server" name="web_video_server" output="screen"/>
+
+    <!-- UART bridge (motor + IMU + encoders) -->
+    <node pkg="uart_bridge" type="uart_bridge.py" name="uart_bridge" output="screen"/>
+
+    <!-- Web control bridge -->
+    <node pkg="web_bridge" type="robot_gateway.py" name="web_gateway" output="screen"/>
+
+    <node pkg="usb_cam"
+      type="usb_cam_node"
+      name="usb_cam"
+      output="screen">
+      <param name="video_device" value="/dev/video0"/>
+      <param name="image_width" value="640"/>
+      <param name="image_height" value="480"/>
+      <param name="pixel_format" value="yuyv"/>
+      <param name="camera_frame_id" value="camera_link"/>
+    </node>
+
+    <node pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="base_to_camera"
+        args="0.12 0 -0.04 0 0 0 base_link camera_link"/>
+
+    <node pkg="tf2_ros"
+        type="static_transform_publisher"
+        name="base_to_imu"
+        args="0.09 -0.05 0 0 0 0 base_link imu_link"/>
+
+    <node pkg="rtabmap_ros" type="rtabmap" name="rtabmap" output="screen">
+
+       <param name="frame_id" value="base_link"/>
+       <param name="odom_frame_id" value="odom"/>
+
+       <param name="subscribe_depth" value="false"/>
+       <param name="approx_sync" value="true"/>
+       <param name="visual_odometry" value="true"/>
+       <param name="subscribe_imu" value="false"/>
+
+       <remap from="rgb/image" to="/usb_cam/image_raw"/>
+       <remap from="rgb/camera_info" to="/usb_cam/camera_info"/>
+       <remap from="odom" to="/odom"/>
+
+    </node>
+
+    <include file="$(find robot_bringup)/launch/move_base.launch"/>
+</launch>

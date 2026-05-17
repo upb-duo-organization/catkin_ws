@@ -2,12 +2,12 @@
 """
 uart_bridge.py — UART bridge between ROS and MCU.
 
-RX packet (MCU → ROS), 34 bytes:
-  [0xAA][0x55][left f32][right f32][accel xyz f32x3][gyro xyz f32x3]
+RX packet (MCU → ROS), 38 bytes:
+  [0xAA][0x55][left f32][right f32][accel xyz f32x3][gyro xyz f32x3][sr04 f32]
 
 TX packet (ROS → MCU), 10 bytes:
-  [0xAA][0x01][linear f32][angular f32]   — cmd_vel
-  [0xAA][0x02][mode u8][0x00 x7]          — mode (1=teleop, 0=autonomous)
+  [0xAA][0x01][linear f32][angular f32]  — cmd_vel
+  [0xAA][0x02][mode u8][0x00 x7]         — mode (1=teleop, 0=autonomous)
 """
 
 import threading
@@ -22,43 +22,41 @@ from std_msgs.msg import Float32, String
 class UARTBridge:
 
     RX_HEADER    = b'\xAA\x55'
-    RX_PAYLOAD_S = 38   # bytes after header
-    TX_PACKET_S  = 10   # all TX packets padded to this size
+    RX_PAYLOAD_S = 36    # 9 floats: left, right, ax, ay, az, gx, gy, gz, sr04
+    TX_PACKET_S  = 10
 
     def __init__(self):
         port = rospy.get_param("~port", "/dev/ttyTHS1")
         baud = rospy.get_param("~baud", 115200)
 
-        self._ser = serial.Serial(port=port, baudrate=baud, timeout=0.1)
-        self._tx_lock = threading.Lock()  # guard concurrent TX writes
+        self._ser      = serial.Serial(port=port, baudrate=baud, timeout=0.1)
+        self._tx_lock  = threading.Lock()
 
-        # ── publishers ────────────────────────────────────────────────────────
-        self._left_pub  = rospy.Publisher("/wheel_left",    Float32, queue_size=10)
-        self._right_pub = rospy.Publisher("/wheel_right",   Float32, queue_size=10)
-        self._imu_pub   = rospy.Publisher("/imu/data_raw",  Imu,     queue_size=10)
-        self._range_pub = rospy.Publisher("/sr04/range",    Range,   queue_size=10)
+        # publishers
+        self._left_pub  = rospy.Publisher("/wheel_left",   Float32, queue_size=10)
+        self._right_pub = rospy.Publisher("/wheel_right",  Float32, queue_size=10)
+        self._imu_pub   = rospy.Publisher("/imu/data_raw", Imu,     queue_size=10)
+        self._range_pub = rospy.Publisher("/sr04/range",   Range,   queue_size=10)
 
-        # ── subscribers ───────────────────────────────────────────────────────
-        rospy.Subscriber("/cmd_vel",     Twist,  self._cmd_cb)
-        rospy.Subscriber("/robot/mode",  String, self._mode_cb)
+        # subscribers
+        rospy.Subscriber("/cmd_vel",    Twist,  self._cmd_cb)
+        rospy.Subscriber("/robot/mode", String, self._mode_cb)
 
-        # ── RX thread ─────────────────────────────────────────────────────────
+        # RX thread
         self._rx_thread = threading.Thread(target=self._rx_loop, daemon=True)
         self._rx_thread.start()
 
         rospy.loginfo("UART bridge started on %s @ %d", port, baud)
 
-    # ── TX helpers ────────────────────────────────────────────────────────────
+    # ── TX ────────────────────────────────────────────────────────────────────
 
     def _write(self, packet):
-        """Thread-safe UART write."""
         with self._tx_lock:
             self._ser.write(packet)
 
     def _cmd_cb(self, msg):
-        """Pack and send a cmd_vel Twist as a 0x01 move packet."""
         packet = struct.pack(
-            "<BBff4x",       # header(2) + linear f32 + angular f32 + 4 pad = 10
+            "<BBff4x",
             0xAA, 0x01,
             msg.linear.x,
             msg.angular.z,
@@ -66,40 +64,30 @@ class UARTBridge:
         self._write(packet)
 
     def _mode_cb(self, msg):
-        """
-        Send IS_CONNECTED state to MCU.
-        teleop=1 (remote control, MCU avoidance off)
-        autonomous=0 (MCU avoidance on)
-        """
-        is_connected = 1 if msg.data == "teleop" else 0
+        is_connected = 1 if msg.data.strip().lower() == "teleop" else 0
         packet = struct.pack(
-            "<BBB7x",        # header(2) + value(1) + 7 pad = 10
+            "<BBB7x",
             0xAA, 0x02,
             is_connected,
         )
         self._write(packet)
         rospy.loginfo("UART: mode=%s IS_CONNECTED=%d", msg.data, is_connected)
 
-    # ── RX loop ───────────────────────────────────────────────────────────────
+    # ── RX ────────────────────────────────────────────────────────────────────
 
     def _rx_loop(self):
         while not rospy.is_shutdown():
             try:
-                # sync to header
                 header = self._ser.read(2)
                 if len(header) != 2:
                     continue
                 if header != self.RX_HEADER:
-                    rospy.logwarn_throttle(
-                        5.0, "UART RX: bad header %s", header.hex()
-                    )
+                    rospy.logwarn_throttle(5.0, "UART RX: bad header %s", header.hex())
                     continue
 
                 payload = self._ser.read(self.RX_PAYLOAD_S)
                 if len(payload) != self.RX_PAYLOAD_S:
-                    rospy.logwarn_throttle(
-                        5.0, "UART RX: short payload %d", len(payload)
-                    )
+                    rospy.logwarn_throttle(5.0, "UART RX: short payload %d", len(payload))
                     continue
 
                 self._parse_rx(payload)
@@ -108,10 +96,10 @@ class UARTBridge:
                 rospy.logerr_throttle(5.0, "UART error: %s", e)
 
     def _parse_rx(self, payload):
-        """Unpack 32-byte payload and publish all sensor data."""
         try:
             left, right, ax, ay, az, gx, gy, gz, sr04_cm = struct.unpack(
-                "<fffffffff", payload
+                "<fffffffff",
+                payload,
             )
         except struct.error as e:
             rospy.logwarn("UART RX: unpack error %s", e)
@@ -132,42 +120,45 @@ class UARTBridge:
         imu.angular_velocity.y = gy
         imu.angular_velocity.z = gz
         imu.angular_velocity_covariance = [
-            0.01, 0, 0,
-            0, 0.01, 0,
-            0, 0, 0.01,
+            0.01, 0.0,  0.0,
+            0.0,  0.01, 0.0,
+            0.0,  0.0,  0.01,
         ]
 
         imu.linear_acceleration.x = ax
         imu.linear_acceleration.y = ay
         imu.linear_acceleration.z = az
         imu.linear_acceleration_covariance = [
-            0.1, 0, 0,
-            0, 0.1, 0,
-            0, 0, 0.1,
+            0.1, 0.0, 0.0,
+            0.0, 0.1, 0.0,
+            0.0, 0.0, 0.1,
         ]
 
-        # no orientation from raw IMU — signal this with -1 in [0,0]
+        # -1 in [0,0] signals no orientation available
         imu.orientation_covariance = [
-            -1, 0, 0,
-            0,  0, 0,
-            0,  0, 0,
+            -1.0, 0.0, 0.0,
+            0.0,  0.0, 0.0,
+            0.0,  0.0, 0.0,
         ]
 
         self._imu_pub.publish(imu)
 
-	if sr04_cm > 0.0:   # -1.0 means timeout — don't publish
-        	r = Range()
-        	r.header.stamp    = now
-        	r.header.frame_id = "base_link"
-        	r.radiation_type  = Range.ULTRASOUND
-        	r.field_of_view   = 0.26    # ~15 degrees
-        	r.min_range       = 0.02
-        	r.max_range       = 4.0
-        	r.range           = sr04_cm / 100.0   # cm → metres
-        	self._range_pub.publish(r)
+        # SR04 — skip on timeout (-1.0)
+        if sr04_cm > 0.0:
+            r = Range()
+            r.header.stamp    = now
+            r.header.frame_id = "base_link"
+            r.radiation_type  = Range.ULTRASOUND
+            r.field_of_view   = 0.26
+            r.min_range       = 0.02
+            r.max_range       = 4.0
+            r.range           = sr04_cm / 100.0  # cm → metres
+            self._range_pub.publish(r)
 
-    	rospy.logdebug("RX left=%.3f right=%.3f sr04=%.1fcm", left, right, sr04_cm)
-
+        rospy.loginfo(
+            "RX left=%.3f right=%.3f sr04=%.1fcm",
+            left, right, sr04_cm,
+        )
 
 
 if __name__ == "__main__":

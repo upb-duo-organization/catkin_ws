@@ -1,0 +1,8 @@
+prefix=/home/sleepy/catkin_ws/install
+
+Name: yamnet_coral
+Description: Description of yamnet_coral
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: 

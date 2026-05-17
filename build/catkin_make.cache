@@ -1,2 +1,2 @@
-robot_bringup:robot_exploration:robot_odometry:robot_perception:robot_semantic_map:uart_bridge:web_bridge
+robot_bringup:robot_exploration:robot_odometry:robot_perception:robot_semantic_map:uart_bridge:web_bridge:yamnet_coral
 -DCATKIN_DEVEL_PREFIX=/home/sleepy/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/sleepy/catkin_ws/install -G Unix Makefiles

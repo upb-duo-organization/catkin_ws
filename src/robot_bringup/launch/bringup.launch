@@ -68,4 +68,20 @@
     <param name="imu0_remove_gravitational_acceleration" value="true"/>
 
 </node>
+<node pkg="audio_capture"
+        type="audio_capture"
+        name="mic">
+    <param name="sample_rate" value="16000"/>
+  </node>
+
+  <node pkg="yamnet_coral"
+        type="coral_yamnet_node.py"
+        name="coral">
+
+    <param name="model"
+      value="$(find yamnet_coral)/models/yamnet_en_with_metadata_edgetpu.tflite"/>
+
+    <param name="labels"
+         value="$(find yamnet_coral)/models/yamnet_class_map.csv"/>
+  </node>
 </launch>

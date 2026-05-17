@@ -1012,6 +1012,227 @@ nav_msgs_generate_messages_py/fast:
 	$(MAKE) -f robot_odometry/CMakeFiles/nav_msgs_generate_messages_py.dir/build.make robot_odometry/CMakeFiles/nav_msgs_generate_messages_py.dir/build
 .PHONY : nav_msgs_generate_messages_py/fast
 
+#=============================================================================
+# Target rules for targets named yamnet_coral_generate_messages
+
+# Build rule for target.
+yamnet_coral_generate_messages: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_generate_messages
+.PHONY : yamnet_coral_generate_messages
+
+# fast build rule for target.
+yamnet_coral_generate_messages/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_generate_messages.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_generate_messages.dir/build
+.PHONY : yamnet_coral_generate_messages/fast
+
+#=============================================================================
+# Target rules for targets named audio_common_msgs_generate_messages_py
+
+# Build rule for target.
+audio_common_msgs_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 audio_common_msgs_generate_messages_py
+.PHONY : audio_common_msgs_generate_messages_py
+
+# fast build rule for target.
+audio_common_msgs_generate_messages_py/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_py.dir/build.make yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_py.dir/build
+.PHONY : audio_common_msgs_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named audio_common_msgs_generate_messages_nodejs
+
+# Build rule for target.
+audio_common_msgs_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 audio_common_msgs_generate_messages_nodejs
+.PHONY : audio_common_msgs_generate_messages_nodejs
+
+# fast build rule for target.
+audio_common_msgs_generate_messages_nodejs/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_nodejs.dir/build.make yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_nodejs.dir/build
+.PHONY : audio_common_msgs_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_genpy
+
+# Build rule for target.
+yamnet_coral_genpy: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_genpy
+.PHONY : yamnet_coral_genpy
+
+# fast build rule for target.
+yamnet_coral_genpy/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_genpy.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_genpy.dir/build
+.PHONY : yamnet_coral_genpy/fast
+
+#=============================================================================
+# Target rules for targets named audio_common_msgs_generate_messages_lisp
+
+# Build rule for target.
+audio_common_msgs_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 audio_common_msgs_generate_messages_lisp
+.PHONY : audio_common_msgs_generate_messages_lisp
+
+# fast build rule for target.
+audio_common_msgs_generate_messages_lisp/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_lisp.dir/build.make yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_lisp.dir/build
+.PHONY : audio_common_msgs_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_generate_messages_cpp
+
+# Build rule for target.
+yamnet_coral_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_generate_messages_cpp
+.PHONY : yamnet_coral_generate_messages_cpp
+
+# fast build rule for target.
+yamnet_coral_generate_messages_cpp/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_cpp.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_cpp.dir/build
+.PHONY : yamnet_coral_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named audio_common_msgs_generate_messages_cpp
+
+# Build rule for target.
+audio_common_msgs_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 audio_common_msgs_generate_messages_cpp
+.PHONY : audio_common_msgs_generate_messages_cpp
+
+# fast build rule for target.
+audio_common_msgs_generate_messages_cpp/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_cpp.dir/build.make yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_cpp.dir/build
+.PHONY : audio_common_msgs_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_gencpp
+
+# Build rule for target.
+yamnet_coral_gencpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_gencpp
+.PHONY : yamnet_coral_gencpp
+
+# fast build rule for target.
+yamnet_coral_gencpp/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_gencpp.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_gencpp.dir/build
+.PHONY : yamnet_coral_gencpp/fast
+
+#=============================================================================
+# Target rules for targets named audio_common_msgs_generate_messages_eus
+
+# Build rule for target.
+audio_common_msgs_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 audio_common_msgs_generate_messages_eus
+.PHONY : audio_common_msgs_generate_messages_eus
+
+# fast build rule for target.
+audio_common_msgs_generate_messages_eus/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_eus.dir/build.make yamnet_coral/CMakeFiles/audio_common_msgs_generate_messages_eus.dir/build
+.PHONY : audio_common_msgs_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_generate_messages_eus
+
+# Build rule for target.
+yamnet_coral_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_generate_messages_eus
+.PHONY : yamnet_coral_generate_messages_eus
+
+# fast build rule for target.
+yamnet_coral_generate_messages_eus/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_eus.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_eus.dir/build
+.PHONY : yamnet_coral_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named _yamnet_coral_generate_messages_check_deps_AudioClassification
+
+# Build rule for target.
+_yamnet_coral_generate_messages_check_deps_AudioClassification: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _yamnet_coral_generate_messages_check_deps_AudioClassification
+.PHONY : _yamnet_coral_generate_messages_check_deps_AudioClassification
+
+# fast build rule for target.
+_yamnet_coral_generate_messages_check_deps_AudioClassification/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/_yamnet_coral_generate_messages_check_deps_AudioClassification.dir/build.make yamnet_coral/CMakeFiles/_yamnet_coral_generate_messages_check_deps_AudioClassification.dir/build
+.PHONY : _yamnet_coral_generate_messages_check_deps_AudioClassification/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_geneus
+
+# Build rule for target.
+yamnet_coral_geneus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_geneus
+.PHONY : yamnet_coral_geneus
+
+# fast build rule for target.
+yamnet_coral_geneus/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_geneus.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_geneus.dir/build
+.PHONY : yamnet_coral_geneus/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_generate_messages_lisp
+
+# Build rule for target.
+yamnet_coral_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_generate_messages_lisp
+.PHONY : yamnet_coral_generate_messages_lisp
+
+# fast build rule for target.
+yamnet_coral_generate_messages_lisp/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_lisp.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_lisp.dir/build
+.PHONY : yamnet_coral_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_genlisp
+
+# Build rule for target.
+yamnet_coral_genlisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_genlisp
+.PHONY : yamnet_coral_genlisp
+
+# fast build rule for target.
+yamnet_coral_genlisp/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_genlisp.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_genlisp.dir/build
+.PHONY : yamnet_coral_genlisp/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_generate_messages_py
+
+# Build rule for target.
+yamnet_coral_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_generate_messages_py
+.PHONY : yamnet_coral_generate_messages_py
+
+# fast build rule for target.
+yamnet_coral_generate_messages_py/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_py.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_py.dir/build
+.PHONY : yamnet_coral_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_generate_messages_nodejs
+
+# Build rule for target.
+yamnet_coral_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_generate_messages_nodejs
+.PHONY : yamnet_coral_generate_messages_nodejs
+
+# fast build rule for target.
+yamnet_coral_generate_messages_nodejs/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_nodejs.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_generate_messages_nodejs.dir/build
+.PHONY : yamnet_coral_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named yamnet_coral_gennodejs
+
+# Build rule for target.
+yamnet_coral_gennodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 yamnet_coral_gennodejs
+.PHONY : yamnet_coral_gennodejs
+
+# fast build rule for target.
+yamnet_coral_gennodejs/fast:
+	$(MAKE) -f yamnet_coral/CMakeFiles/yamnet_coral_gennodejs.dir/build.make yamnet_coral/CMakeFiles/yamnet_coral_gennodejs.dir/build
+.PHONY : yamnet_coral_gennodejs/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1090,6 +1311,23 @@ help:
 	@echo "... nav_msgs_generate_messages_cpp"
 	@echo "... nav_msgs_generate_messages_lisp"
 	@echo "... nav_msgs_generate_messages_py"
+	@echo "... yamnet_coral_generate_messages"
+	@echo "... audio_common_msgs_generate_messages_py"
+	@echo "... audio_common_msgs_generate_messages_nodejs"
+	@echo "... yamnet_coral_genpy"
+	@echo "... audio_common_msgs_generate_messages_lisp"
+	@echo "... yamnet_coral_generate_messages_cpp"
+	@echo "... audio_common_msgs_generate_messages_cpp"
+	@echo "... yamnet_coral_gencpp"
+	@echo "... audio_common_msgs_generate_messages_eus"
+	@echo "... yamnet_coral_generate_messages_eus"
+	@echo "... _yamnet_coral_generate_messages_check_deps_AudioClassification"
+	@echo "... yamnet_coral_geneus"
+	@echo "... yamnet_coral_generate_messages_lisp"
+	@echo "... yamnet_coral_genlisp"
+	@echo "... yamnet_coral_generate_messages_py"
+	@echo "... yamnet_coral_generate_messages_nodejs"
+	@echo "... yamnet_coral_gennodejs"
 .PHONY : help
 
 

@@ -10,8 +10,8 @@ class RobotGateway:
         self.pub_twist = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         self.sub_web = rospy.Subscriber('/web_cmd', String, self.web_callback)
 
-        self.linear_speed = 1.0
-        self.angular_speed = 16.0
+        self.linear_speed = 0.5
+        self.angular_speed = 1.0
 
         rospy.loginfo("Gateway ready")
 

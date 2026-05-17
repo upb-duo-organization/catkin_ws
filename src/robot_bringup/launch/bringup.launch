@@ -1,7 +1,7 @@
 <launch>
     <include file="$(find robot_odometry)/launch/odom.launch"/>
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
-    
+
     <node pkg="web_video_server" type="web_video_server" name="web_video_server" output="screen"/>
 
     <!-- UART bridge (motor + IMU + encoders) -->
@@ -10,55 +10,70 @@
     <!-- Web control bridge -->
     <node pkg="web_bridge" type="robot_gateway.py" name="web_gateway" output="screen"/>
 
-    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter">
-      <param name="use_mag" value="false"/>
-      <param name="publish_tf" value="false"/>
-      <param name="world_frame" value="enu"/>
+    <!-- IMU filter -->
+    <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter" output="screen">
+        <param name="use_mag" value="false"/>
+        <param name="publish_tf" value="false"/>
+        <param name="world_frame" value="enu"/>
     </node>
 
-    <node pkg="usb_cam"
-      type="usb_cam_node"
-      name="usb_cam"
-      output="screen">
-      <param name="video_device" value="/dev/video0"/>
-      <param name="image_width" value="640"/>
-      <param name="image_height" value="480"/>
-      <param name="pixel_format" value="yuyv"/>
-      <param name="camera_frame_id" value="camera_link"/>
+    <!-- Camera -->
+    <node pkg="usb_cam" type="usb_cam_node" name="usb_cam" output="screen">
+        <param name="video_device" value="/dev/video0"/>
+        <param name="image_width" value="640"/>
+        <param name="image_height" value="480"/>
+        <param name="pixel_format" value="yuyv"/>
+        <param name="camera_frame_id" value="camera_link"/>
     </node>
 
-    <node pkg="tf2_ros"
-        type="static_transform_publisher"
-        name="base_to_camera"
-        args="0.12 0 -0.04 0 0 0 base_link camera_link"/>
+    <!-- TF: base -> camera -->
+    <node pkg="tf2_ros" type="static_transform_publisher"
+          name="base_to_camera"
+          args="0.12 0 -0.04 0 0 0 base_link camera_link"/>
 
-    <node pkg="tf2_ros"
-        type="static_transform_publisher"
-        name="base_to_imu"
-        args="0.09 -0.05 0 0 0 0 base_link imu_link"/>
+    <!-- TF: base -> imu -->
+    <node pkg="tf2_ros" type="static_transform_publisher"
+          name="base_to_imu"
+          args="0.09 -0.05 0 0 0 0 base_link imu_link"/>
 
-    <node pkg="robot_localization" type="ekf_localization_node" name="ekf" output="screen">
+    <!-- EKF LOCALIZATION -->
+    <node pkg="robot_localization" type="ekf_localization_node"
+          name="ekf" output="screen">
 
-      <param name="odom_frame" value="odom"/>
-      <param name="base_link_frame" value="base_link"/>
-      <param name="world_frame" value="odom"/>
-      <param name="frequency" value="30"/>
+        <!-- Frames -->
+        <param name="odom_frame" value="odom"/>
+        <param name="base_link_frame" value="base_link"/>
+        <param name="world_frame" value="odom"/>
 
-      <param name="odom0" value="/wheel_odom"/>
-      <param name="odom0_config" value="[true, true, false,
-                                     false, false, false,
-                                     false, false, false,
-                                     false, false, true,
-                                     false, false, false]"/>
+        <param name="frequency" value="30"/>
 
-      <param name="imu0" value="/imu/data"/>
-      <param name="imu0_config" value="[false, false, false,
-                                    false, false, true,
-                                    false, false, false,
-                                    false, false, true,
-                                    false, false, false]"/>
+        <!-- ========================= -->
+        <!-- WHEEL ODOMETRY INPUT -->
+        <!-- ========================= -->
+        <param name="odom0" value="/wheel_odom"/>
+        <param name="odom0_config"
+               value="[true,  true,  false,
+                       false, false, false,
+                       false, false, false,
+                       false, false, true,
+                       false, false, false]"/>
 
-      <param name="imu0_remove_gravitational_acceleration" value="true"/>
+        <param name="odom0_differential" value="false"/>
+        <param name="odom0_relative" value="true"/>
+
+        <!-- ========================= -->
+        <!-- IMU INPUT -->
+        <!-- ========================= -->
+        <param name="imu0" value="/imu/data"/>
+        <param name="imu0_config"
+               value="[false, false, false,
+                       false, false, true,
+                       false, false, false,
+                       false, false, true,
+                       false, false, false]"/>
+
+        <param name="imu0_remove_gravitational_acceleration" value="true"/>
 
     </node>
+
 </launch>

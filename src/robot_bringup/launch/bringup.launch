@@ -39,31 +39,26 @@
 
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf" output="screen">
 
-  	<param name="odom_frame" value="odom"/>
-  	<param name="base_link_frame" value="base_link"/>
-  	<param name="world_frame" value="odom"/>
+      <param name="odom_frame" value="odom"/>
+      <param name="base_link_frame" value="base_link"/>
+      <param name="world_frame" value="odom"/>
+      <param name="frequency" value="30"/>
 
-  	<param name="frequency" value="30"/>
+      <param name="odom0" value="/wheel_odom"/>
+      <param name="odom0_config" value="[true, true, false,
+                                     false, false, false,
+                                     false, false, false,
+                                     false, false, true,
+                                     false, false, false]"/>
 
-  	<!-- Wheel odom -->
-  	<param name="odom0" value="/wheel_odom"/>
-  	<param name="odom0_config" value="
-    	true  true  false
-    	false false false
-    	false false false
-    	false false true
-    	false false false"/>
+      <param name="imu0" value="/imu/data"/>
+      <param name="imu0_config" value="[false, false, false,
+                                    false, false, true,
+                                    false, false, false,
+                                    false, false, true,
+                                    false, false, false]"/>
 
-  	<!-- IMU -->
-  	<param name="imu0" value="/imu/data"/>
-  	<param name="imu0_config" value="
-    	false false false
-    	false false true
-    	false false false
-    	false false true
-    	false false false"/>
-
-  	<param name="imu0_remove_gravitational_acceleration" value="true"/>
+      <param name="imu0_remove_gravitational_acceleration" value="true"/>
 
     </node>
 </launch>

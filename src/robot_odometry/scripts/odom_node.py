@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import rospy
 import math
@@ -33,21 +34,17 @@ class OdomNode:
 
         self.last_time = rospy.Time.now()
 
-        rospy.Subscriber("/wheel_left", Float32, self.left_callback)
-        rospy.Subscriber("/wheel_right", Float32, self.right_callback)
+        rospy.Subscriber("/wheel_left", Float32, self.left_cb, queue_size=1)
+        rospy.Subscriber("/wheel_right", Float32, self.right_cb, queue_size=1)
 
-        self.odom_pub = rospy.Publisher(
-            "/wheel_odom",
-            Odometry,
-            queue_size=20
-        )
+        self.pub = rospy.Publisher("/wheel_odom", Odometry, queue_size=10)
 
-        rospy.loginfo("Wheel odometry node started")
+        rospy.loginfo("Wheel odometry node started (EKF-ready)")
 
-    def left_callback(self, msg):
+    def left_cb(self, msg):
         self.left_rps = msg.data
 
-    def right_callback(self, msg):
+    def right_cb(self, msg):
         self.right_rps = msg.data
 
     def update(self):
@@ -55,32 +52,21 @@ class OdomNode:
         dt = (now - self.last_time).to_sec()
         self.last_time = now
 
-        if dt <= 0.0:
+        if dt <= 0.0 or dt > 0.2:
             return
 
-        # Convert RPS → linear wheel velocity (m/s)
+        # RPS -> rad/s -> m/s
         left_v = 2.0 * math.pi * self.wheel_radius * self.left_rps
         right_v = 2.0 * math.pi * self.wheel_radius * self.right_rps
 
-        # Convert velocity → distance per timestep (IMPORTANT FIX)
+        # integrate distance (more stable than velocity integration)
         dl = left_v * dt
         dr = right_v * dt
 
-        # Optional mild smoothing (distance domain, not velocity domain)
-        if not hasattr(self, "dl_f"):
-            self.dl_f = 0.0
-            self.dr_f = 0.0
+        d_center = (dr + dl) / 2.0
+        d_theta = (dr - dl) / self.wheel_base
 
-        alpha = 0.3
-        self.dl_f = alpha * dl + (1 - alpha) * self.dl_f
-        self.dr_f = alpha * dr + (1 - alpha) * self.dr_f
-
-        # Differential drive model
-        d_center = (self.dr_f + self.dl_f) / 2.0
-        d_theta = (self.dr_f - self.dl_f) / self.wheel_base
-
-        # midpoint integration (much more stable)
-        theta_mid = self.theta + d_theta / 2.0
+        theta_mid = self.theta + d_theta * 0.5
 
         self.x += d_center * math.cos(theta_mid)
         self.y += d_center * math.sin(theta_mid)
@@ -88,7 +74,6 @@ class OdomNode:
 
         q = tf.transformations.quaternion_from_euler(0, 0, self.theta)
 
-        # Publish odometry
         odom = Odometry()
         odom.header.stamp = now
         odom.header.frame_id = "odom"
@@ -98,12 +83,20 @@ class OdomNode:
         odom.pose.pose.position.y = self.y
         odom.pose.pose.orientation = Quaternion(*q)
 
-        # velocity estimate (still useful for debugging / EKF)
         odom.twist.twist.linear.x = d_center / dt
         odom.twist.twist.angular.z = d_theta / dt
 
-        # Pose covariance (reasonable trust in x,y, not in orientation)
+        # IMPORTANT: realistic covariance (this is critical for EKF stability)
         odom.pose.covariance = [
+            0.02, 0,    0,    0, 0, 0,
+            0,    0.02, 0,    0, 0, 0,
+            0,    0,    99999,0, 0, 0,
+            0,    0,    0,    99999,0, 0,
+            0,    0,    0,    0, 99999,0,
+            0,    0,    0,    0, 0, 0.05
+        ]
+
+        odom.twist.covariance = [
             0.05, 0,    0,    0, 0, 0,
             0,    0.05, 0,    0, 0, 0,
             0,    0,    99999,0, 0, 0,
@@ -112,17 +105,7 @@ class OdomNode:
             0,    0,    0,    0, 0, 0.2
         ]
 
-        # Twist covariance
-        odom.twist.covariance = [
-            0.02, 0,    0,    0, 0, 0,
-            0,    0.02, 0,    0, 0, 0,
-            0,    0,    99999,0, 0, 0,
-            0,    0,    0,    99999,0, 0,
-            0,    0,    0,    0, 99999,0,
-            0,    0,    0,    0, 0, 0.1
-        ]
-
-        self.odom_pub.publish(odom)
+        self.pub.publish(odom)
 
 
 if __name__ == "__main__":

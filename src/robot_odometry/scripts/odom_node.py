@@ -8,6 +8,14 @@ from geometry_msgs.msg import Quaternion
 import tf
 
 
+def normalize_angle(a):
+    while a > math.pi:
+        a -= 2.0 * math.pi
+    while a < -math.pi:
+        a += 2.0 * math.pi
+    return a
+
+
 class OdomNode:
 
     def __init__(self):
@@ -28,14 +36,13 @@ class OdomNode:
         rospy.Subscriber("/wheel_left", Float32, self.left_callback)
         rospy.Subscriber("/wheel_right", Float32, self.right_callback)
 
-        # IMPORTANT: publish as sensor odometry (not final odom)
         self.odom_pub = rospy.Publisher(
             "/wheel_odom",
             Odometry,
             queue_size=20
         )
 
-        rospy.loginfo("Wheel odometry node started (EKF-ready)")
+        rospy.loginfo("Wheel odometry node started")
 
     def left_callback(self, msg):
         self.left_rps = msg.data
@@ -51,57 +58,68 @@ class OdomNode:
         if dt <= 0.0:
             return
 
-        # wheel velocities (m/s)
+        # Convert RPS → linear wheel velocity (m/s)
         left_v = 2.0 * math.pi * self.wheel_radius * self.left_rps
         right_v = 2.0 * math.pi * self.wheel_radius * self.right_rps
 
-        v = (left_v + right_v) / 2.0
-        w = (right_v - left_v) / self.wheel_base
+        # Convert velocity → distance per timestep (IMPORTANT FIX)
+        dl = left_v * dt
+        dr = right_v * dt
 
-        # deadband (removes jitter drift)
-        if abs(v) < 1e-4:
-            v = 0.0
-        if abs(w) < 1e-4:
-            w = 0.0
+        # Optional mild smoothing (distance domain, not velocity domain)
+        if not hasattr(self, "dl_f"):
+            self.dl_f = 0.0
+            self.dr_f = 0.0
 
-        # integrate pose
-        self.x += v * math.cos(self.theta) * dt
-        self.y += v * math.sin(self.theta) * dt
-        self.theta += w * dt
+        alpha = 0.3
+        self.dl_f = alpha * dl + (1 - alpha) * self.dl_f
+        self.dr_f = alpha * dr + (1 - alpha) * self.dr_f
+
+        # Differential drive model
+        d_center = (self.dr_f + self.dl_f) / 2.0
+        d_theta = (self.dr_f - self.dl_f) / self.wheel_base
+
+        # midpoint integration (much more stable)
+        theta_mid = self.theta + d_theta / 2.0
+
+        self.x += d_center * math.cos(theta_mid)
+        self.y += d_center * math.sin(theta_mid)
+        self.theta = normalize_angle(self.theta + d_theta)
 
         q = tf.transformations.quaternion_from_euler(0, 0, self.theta)
 
+        # Publish odometry
         odom = Odometry()
         odom.header.stamp = now
         odom.header.frame_id = "odom"
         odom.child_frame_id = "base_link"
 
-        # position
         odom.pose.pose.position.x = self.x
         odom.pose.pose.position.y = self.y
         odom.pose.pose.orientation = Quaternion(*q)
 
-        # velocity
-        odom.twist.twist.linear.x = v
-        odom.twist.twist.angular.z = w
+        # velocity estimate (still useful for debugging / EKF)
+        odom.twist.twist.linear.x = d_center / dt
+        odom.twist.twist.angular.z = d_theta / dt
 
-        # IMPORTANT: covariance (needed for EKF)
+        # Pose covariance (reasonable trust in x,y, not in orientation)
         odom.pose.covariance = [
-            0.05, 0,    0,    0,    0,    0,
-            0,    0.05, 0,    0,    0,    0,
-            0,    0,    99999,0,    0,    0,
-            0,    0,    0,    99999,0,    0,
-            0,    0,    0,    0,    99999,0,
-            0,    0,    0,    0,    0,    0.2
+            0.05, 0,    0,    0, 0, 0,
+            0,    0.05, 0,    0, 0, 0,
+            0,    0,    99999,0, 0, 0,
+            0,    0,    0,    99999,0, 0,
+            0,    0,    0,    0, 99999,0,
+            0,    0,    0,    0, 0, 0.2
         ]
 
+        # Twist covariance
         odom.twist.covariance = [
-            0.02, 0,    0,    0,    0,    0,
-            0,    0.02, 0,    0,    0,    0,
-            0,    0,    99999,0,    0,    0,
-            0,    0,    0,    99999,0,    0,
-            0,    0,    0,    0,    99999,0,
-            0,    0,    0,    0,    0,    0.1
+            0.02, 0,    0,    0, 0, 0,
+            0,    0.02, 0,    0, 0, 0,
+            0,    0,    99999,0, 0, 0,
+            0,    0,    0,    99999,0, 0,
+            0,    0,    0,    0, 99999,0,
+            0,    0,    0,    0, 0, 0.1
         ]
 
         self.odom_pub.publish(odom)

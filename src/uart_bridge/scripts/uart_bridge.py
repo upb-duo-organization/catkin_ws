@@ -136,9 +136,9 @@ class UARTBridge:
 
         # -1 in [0,0] signals no orientation available
         imu.orientation_covariance = [
-            -1.0, 0.0, 0.0,
-            0.0,  0.0, 0.0,
-            0.0,  0.0, 0.0,
+            0.05, 0.0, 0.0,
+            0.0,  0.05, 0.0,
+            0.0,  0.0, 0.1,
         ]
 
         self._imu_pub.publish(imu)

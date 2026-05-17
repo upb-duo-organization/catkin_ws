@@ -85,7 +85,7 @@ class OdomNode:
         odom.twist.twist.linear.x = v
         odom.twist.twist.angular.z = w
 
-        # 🔥 IMPORTANT: covariance (needed for EKF)
+        # IMPORTANT: covariance (needed for EKF)
         odom.pose.covariance = [
             0.05, 0,    0,    0,    0,    0,
             0,    0.05, 0,    0,    0,    0,

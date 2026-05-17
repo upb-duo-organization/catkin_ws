@@ -137,6 +137,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/sleepy/catkin_ws/build/robot_bringup/cmake_install.cmake")
   include("/home/sleepy/catkin_ws/build/robot_odometry/cmake_install.cmake")
   include("/home/sleepy/catkin_ws/build/uart_bridge/cmake_install.cmake")
+  include("/home/sleepy/catkin_ws/build/robot_yolo/cmake_install.cmake")
   include("/home/sleepy/catkin_ws/build/web_bridge/cmake_install.cmake")
   include("/home/sleepy/catkin_ws/build/yamnet_coral/cmake_install.cmake")
 

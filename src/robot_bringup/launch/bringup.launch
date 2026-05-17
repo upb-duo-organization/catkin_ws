@@ -75,8 +75,8 @@
   </node>
 
   <node pkg="yamnet_coral"
-        type="coral_yamnet_node.py"
-        name="coral">
+        type="coral_yamnet.py"
+        name="coral_yamnet">
 
     <param name="model"
       value="$(find yamnet_coral)/models/yamnet_en_with_metadata_edgetpu.tflite"/>

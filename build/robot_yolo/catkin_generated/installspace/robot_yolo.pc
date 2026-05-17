@@ -1,0 +1,8 @@
+prefix=/home/sleepy/catkin_ws/install
+
+Name: robot_yolo
+Description: Description of robot_yolo
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

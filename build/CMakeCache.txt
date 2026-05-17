@@ -420,6 +420,12 @@ robot_semantic_map_BINARY_DIR:STATIC=/home/sleepy/catkin_ws/build/robot_semantic
 //Value Computed by CMake
 robot_semantic_map_SOURCE_DIR:STATIC=/home/sleepy/catkin_ws/src/robot_semantic_map
 
+//Value Computed by CMake
+robot_yolo_BINARY_DIR:STATIC=/home/sleepy/catkin_ws/build/robot_yolo
+
+//Value Computed by CMake
+robot_yolo_SOURCE_DIR:STATIC=/home/sleepy/catkin_ws/src/robot_yolo
+
 //The directory containing a CMake configuration file for rosconsole.
 rosconsole_DIR:PATH=/opt/ros/melodic/share/rosconsole/cmake
 
@@ -596,7 +602,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=12
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=13
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

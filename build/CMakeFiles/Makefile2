@@ -2356,6 +2356,24 @@ uart_bridge/preinstall:
 .PHONY : uart_bridge/preinstall
 
 #=============================================================================
+# Directory level rules for directory robot_yolo
+
+# Convenience name for "all" pass in the directory.
+robot_yolo/all:
+
+.PHONY : robot_yolo/all
+
+# Convenience name for "clean" pass in the directory.
+robot_yolo/clean:
+
+.PHONY : robot_yolo/clean
+
+# Convenience name for "preinstall" pass in the directory.
+robot_yolo/preinstall:
+
+.PHONY : robot_yolo/preinstall
+
+#=============================================================================
 # Directory level rules for directory web_bridge
 
 # Convenience name for "all" pass in the directory.
